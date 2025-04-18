@@ -1,6 +1,6 @@
 # FastAPI URL Shortener
 
-## Deveop
+## Develop
 
 ### Setup:
 
