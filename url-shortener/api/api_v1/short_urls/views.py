@@ -52,3 +52,28 @@ def read_short_url(
     ],
 ):
     return url
+
+
+@router.delete(
+    "/{slug}/",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": "Short URL not found",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "URL 'slug' not found",
+                    },
+                },
+            },
+        },
+    },
+)
+def delete_short_url(
+    url: Annotated[
+        ShortUrl,
+        Depends(prefetch_short_url),
+    ],
+) -> None:
+    storage.delete(short_url=url)
