@@ -6,7 +6,7 @@ from fastapi import (
     BackgroundTasks,
     status,
     Request,
-    Query,
+    Header,
 )
 
 from core.config import API_TOKENS
@@ -49,9 +49,13 @@ def save_storage_state(background_tasks: BackgroundTasks, request: Request):
 def api_token_required_for_unsafe_methods(
     api_token: Annotated[
         str,
-        Query(),
+        Header(alias="x-auth-token"),
     ],
+    request: Request,
 ):
+    if request.method not in UNSAFE_METHODS:
+        return
+
     if api_token not in API_TOKENS:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
