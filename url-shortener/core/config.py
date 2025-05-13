@@ -8,3 +8,13 @@ LOG_LEVEL = logging.INFO
 LOG_FORMAT: str = (
     "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
 )
+
+
+# Никогда не храните здесь настоящие токены
+# Только фейковые значения
+API_TOKENS: frozenset[str] = frozenset(
+    {
+        "4yU3nJOUVRq9JzykON1rRQ",
+        "yzwJinC68iFvrd4b7iw9wg",
+    }
+)
