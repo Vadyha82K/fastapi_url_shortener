@@ -11,9 +11,14 @@ from fastapi import (
 from fastapi.security import (
     HTTPAuthorizationCredentials,
     HTTPBearer,
+    HTTPBasic,
+    HTTPBasicCredentials,
 )
 
-from core.config import API_TOKENS
+from core.config import (
+    API_TOKENS,
+    USERS_DB,
+)
 from .crud import storage
 from schemas.short_url import ShortUrl
 
@@ -32,6 +37,12 @@ UNSAFE_METHODS = frozenset(
 static_aip_token = HTTPBearer(
     scheme_name="Static API token",
     description="Your **Static API token** from developer portal. [Read more](#)",
+    auto_error=False,
+)
+
+user_basic_auth = HTTPBasic(
+    scheme_name="Basic auth",
+    description="Basic username + password",
     auto_error=False,
 )
 
@@ -56,24 +67,25 @@ def save_storage_state(background_tasks: BackgroundTasks, request: Request):
         background_tasks.add_task(storage.save_state)
 
 
-def api_token_required_for_unsafe_methods(
+def user_basic_auth_required_for_unsafe(
     request: Request,
-    api_token: Annotated[
-        HTTPAuthorizationCredentials | None,
-        Depends(static_aip_token),
-    ] = None,
-):
+    credentials: Annotated[
+        HTTPBasicCredentials | None,
+        Depends(user_basic_auth),
+    ],
+) -> None:
     if request.method not in UNSAFE_METHODS:
         return
 
-    if not api_token:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="API token is required",
-        )
+    if (
+        credentials
+        and credentials.username in USERS_DB
+        and USERS_DB[credentials.username] == credentials.password
+    ):
+        return
 
-    if api_token.credentials not in API_TOKENS:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid API Token",
-        )
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="User credentials required. Invalid username or password.",
+        headers={"WWW-Authenticate": "Basic"},
+    )
