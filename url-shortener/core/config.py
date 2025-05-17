@@ -10,15 +10,6 @@ LOG_FORMAT: str = (
 )
 
 
-# Никогда не храните здесь настоящие токены
-# Только фейковые значения
-API_TOKENS: frozenset[str] = frozenset(
-    {
-        "4yU3nJOUVRq9JzykON1rRQ",
-        "yzwJinC68iFvrd4b7iw9wg",
-    }
-)
-
 # Only for demo
 # No real users in code
 USERS_DB: dict[str, str] = {
@@ -30,3 +21,6 @@ USERS_DB: dict[str, str] = {
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
 REDIS_DB = 0
+REDIS_DB_TOKENS = 1
+
+REDIS_TOKENS_SET_NAME = "tokens"
