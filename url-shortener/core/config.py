@@ -18,12 +18,14 @@ USERS_DB: dict[str, str] = {
     "bob": "qwerty",
 }
 
+
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
-
+# Номер базы данных
 REDIS_DB = 0
 REDIS_DB_TOKENS = 1
 REDIS_DB_USERS = 2
-
+Redis_DB_SHORT_URLS = 3
 
 REDIS_TOKENS_SET_NAME = "tokens"
+REDIS_SHORT_URLS_HASH_NAME = "short-urls"

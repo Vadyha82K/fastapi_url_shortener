@@ -15,7 +15,6 @@ from fastapi.security import (
     HTTPBasicCredentials,
 )
 
-from core.config import USERS_DB
 
 from .crud import storage
 from api.api_v1.auth.services import (
