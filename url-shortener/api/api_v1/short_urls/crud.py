@@ -1,13 +1,9 @@
 import logging
 
-from pydantic import (
-    BaseModel,
-    ValidationError,
-)
+from pydantic import BaseModel
 from redis import Redis
 
 from core import config
-from core.config import SHORT_URLS_STORAGE_FILEPATH
 from schemas.short_url import (
     ShortUrl,
     ShortUrlCreate,
@@ -26,33 +22,6 @@ redis = Redis(
 
 
 class ShortUrlsStorage(BaseModel):
-    slug_to_short_url: dict[str, ShortUrl] = {}
-
-    def save_state(self) -> None:
-        SHORT_URLS_STORAGE_FILEPATH.write_text(self.model_dump_json(indent=2))
-        log.info("Saved short urls to storage file.")
-
-    @classmethod
-    def from_state(cls) -> "ShortUrlsStorage":
-        if not SHORT_URLS_STORAGE_FILEPATH.exists():
-            log.info("Short urls file doesn't not exist.")
-            return ShortUrlsStorage()
-        return cls.model_validate_json(SHORT_URLS_STORAGE_FILEPATH.read_text())
-
-    def init_storage_from_state(self) -> None:
-        try:
-            data = ShortUrlsStorage.from_state()
-            log.warning("Recovered data from storage file.")
-        except ValidationError:
-            self.save_state()
-            log.warning("Rewritten storage file due to validation error.")
-            return
-        # обновляем свойство напрямую
-        # если будут новые свойства,
-        # то их тоже надо обновить
-        self.slug_to_short_url.update(
-            data.slug_to_short_url,
-        )
 
     @staticmethod
     def save_short_url(short_url: ShortUrl):
