@@ -1,4 +1,5 @@
 import logging
+from abc import abstractmethod
 
 from pydantic import (
     BaseModel,
@@ -55,6 +56,15 @@ class ShortUrlsStorage(BaseModel):
         )
 
     @staticmethod
+    def save_short_url(short_url: ShortUrl):
+        redis.hset(
+            name=config.REDIS_SHORT_URLS_HASH_NAME,
+            key=short_url.slug,
+            value=short_url.model_dump_json(),
+        )
+        return short_url
+
+    @staticmethod
     def get() -> list[ShortUrl]:
         return [
             ShortUrl.model_validate_json(value)
@@ -69,16 +79,11 @@ class ShortUrlsStorage(BaseModel):
         ):
             return ShortUrl.model_validate_json(data)
 
-    @staticmethod
-    def create(short_url_in: ShortUrlCreate) -> ShortUrl:
+    def create(self, short_url_in: ShortUrlCreate) -> ShortUrl:
         short_url = ShortUrl(
             **short_url_in.model_dump(),
         )
-        redis.hset(
-            name=config.REDIS_SHORT_URLS_HASH_NAME,
-            key=short_url.slug,
-            value=short_url.model_dump_json(),
-        )
+        self.save_short_url(short_url)
         log.info("Created short url %s", short_url)
         return short_url
 
@@ -96,8 +101,7 @@ class ShortUrlsStorage(BaseModel):
     ) -> ShortUrl:
         for field_name, value in short_url_in:
             setattr(short_url, field_name, value)
-        self.slug_to_short_url[short_url.slug] = short_url
-        log.info("Update short url %s", short_url)
+        self.save_short_url(short_url)
         return short_url
 
     def update_partial(
@@ -107,8 +111,7 @@ class ShortUrlsStorage(BaseModel):
     ) -> ShortUrl:
         for field_name, value in short_url_in.model_dump(exclude_unset=True).items():
             setattr(short_url, field_name, value)
-        self.slug_to_short_url[short_url.slug] = short_url
-        log.info("Update partial short url %s", short_url)
+        self.save_short_url(short_url)
         return short_url
 
 
