@@ -1,5 +1,4 @@
 import logging
-from abc import abstractmethod
 
 from pydantic import (
     BaseModel,
@@ -87,9 +86,12 @@ class ShortUrlsStorage(BaseModel):
         log.info("Created short url %s", short_url)
         return short_url
 
+    @staticmethod
     def delete_by_slug(self, slug: str) -> None:
-        result = self.slug_to_short_url.pop(slug, None)
-        log.info("Delete short url %s", result)
+        redis.hdel(
+            config.REDIS_SHORT_URLS_HASH_NAME,
+            slug,
+        )
 
     def delete(self, short_url: ShortUrl) -> None:
         self.delete_by_slug(slug=short_url.slug)
