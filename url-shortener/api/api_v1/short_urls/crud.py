@@ -54,17 +54,23 @@ class ShortUrlsStorage(BaseModel):
             data.slug_to_short_url,
         )
 
-    def get(self) -> list[ShortUrl]:
-        return list(self.slug_to_short_url.values())
+    @staticmethod
+    def get() -> list[ShortUrl]:
+        return [
+            ShortUrl.model_validate_json(value)
+            for value in redis.hvals(name=config.REDIS_SHORT_URLS_HASH_NAME)
+        ]
 
-    def get_by_slug(self, slug: str) -> ShortUrl | None:
+    @staticmethod
+    def get_by_slug(slug: str) -> ShortUrl | None:
         if data := redis.hget(
             name=config.REDIS_SHORT_URLS_HASH_NAME,
             key=slug,
         ):
             return ShortUrl.model_validate_json(data)
 
-    def create(self, short_url_in: ShortUrlCreate) -> ShortUrl:
+    @staticmethod
+    def create(short_url_in: ShortUrlCreate) -> ShortUrl:
         short_url = ShortUrl(
             **short_url_in.model_dump(),
         )
