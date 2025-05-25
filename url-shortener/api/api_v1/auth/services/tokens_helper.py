@@ -50,3 +50,14 @@ class AbstractTokensHelper(ABC):
         token = self.generate_token()
         self.add_token(token)
         return token
+
+    @abstractmethod
+    def delete_token(
+        self,
+        token: str,
+    ) -> None:
+        """
+        Удаляет токен
+        :param token: - ожидается токен, который необходимо удалить
+        :return: None
+        """

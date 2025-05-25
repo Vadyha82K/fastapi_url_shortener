@@ -4,7 +4,7 @@ import typer
 from rich import print
 from rich.markdown import Markdown
 
-from api.api_v1.auth.services import redis_tokens
+from api.api_v1.auth.services import redis_tokens as tokens
 
 app = typer.Typer(
     name="token",
@@ -30,7 +30,7 @@ def check(
         f"Token [bold]{token}[/bold]",
         (
             "[green]exists[/green]."
-            if redis_tokens.token_exists(token)
+            if tokens.token_exists(token)
             else "[red]does not exists[/red]."
         ),
     )
@@ -42,5 +42,36 @@ def list_tokens():
     Список всех токенов
     """
     print(Markdown("# Available API Tokens"))
-    print(Markdown("\n- ".join([""] + redis_tokens.get_tokens())))
+    print(Markdown("\n- ".join([""] + tokens.get_tokens())))
     print()
+
+
+@app.command()
+def create() -> None:
+    """
+    Создание нового токена и сохранение его в базу данных
+    """
+    new_token = tokens.generate_and_save_token()
+    print(f"Новый токен [bold][green]{new_token}[/green][/bold] сохранен в базу данных")
+
+
+@app.command()
+def add(token):
+    """
+    Добавляет токен в БД
+    """
+    tokens.add_token(token)
+    print(f"Токен [bold][blue] {token} [/blue][/bold]добавлен в БД")
+
+
+@app.command(name="rm")
+def delete(token: str) -> None:
+    """
+    Удаление токена из базы данных
+    """
+    if not tokens.token_exists(token):
+        print(f"Токен [bold][red] {token} [/red][/bold] не найден")
+        return
+
+    tokens.delete_token(token)
+    print(f"Токен [bold][red] {token} [/bold][/red] успешно удален!")
