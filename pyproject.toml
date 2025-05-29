@@ -9,3 +9,8 @@ dependencies = [
     "redis[hiredis]>=6.1.0",
     "typer>=0.15.2",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+]

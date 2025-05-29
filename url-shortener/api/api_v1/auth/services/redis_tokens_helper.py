@@ -1,3 +1,5 @@
+from typing import cast
+
 from redis import Redis
 
 from api.api_v1.auth.services.tokens_helper import AbstractTokensHelper
@@ -35,7 +37,9 @@ class RedisTokensHelper(AbstractTokensHelper):
         )
 
     def get_tokens(self) -> list[str]:
-        return list(self.redis.smembers(self.tokens_set))
+        return list(
+            cast(set[str], self.redis.smembers(self.tokens_set)),
+        )
 
     def delete_token(self, token: str):
         if self.token_exists(token=token):
