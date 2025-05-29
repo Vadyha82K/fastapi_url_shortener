@@ -22,7 +22,7 @@ def main() -> None:
     c = add(a, b)
     print(c)
     print("type c:", type(c))
-    reveal_type(c)
+    # reveal_type(c)
     print(a + b)
     print(redis.ping())
     redis.set("name", "Suren")

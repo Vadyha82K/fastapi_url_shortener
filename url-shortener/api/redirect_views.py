@@ -19,7 +19,7 @@ def redirect_shot_url(
         ShortUrl,
         Depends(prefetch_short_url),
     ],
-):
+) -> RedirectResponse:
     return RedirectResponse(
         url=str(url.target_url),
     )

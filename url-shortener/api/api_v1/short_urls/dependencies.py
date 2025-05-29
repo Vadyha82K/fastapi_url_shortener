@@ -60,11 +60,11 @@ def prefetch_short_url(slug: str) -> ShortUrl:
 
 def validate_api_token(
     api_token: HTTPAuthorizationCredentials,
-):
+) -> None:
     if redis_tokens.token_exists(
         api_token.credentials,
     ):
-        return
+        return None
 
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -74,7 +74,7 @@ def validate_api_token(
 
 def validate_basic_auth(
     credentials: HTTPBasicCredentials,
-):
+) -> None:
     if redis_users.validate_user_password(
         username=credentials.username,
         password=credentials.password,
@@ -98,7 +98,7 @@ def api_token_or_user_basic_auth_required_for_unsafe_methods(
         HTTPBasicCredentials | None,
         Depends(user_basic_auth),
     ],
-):
+) -> None:
     if request.method not in UNSAFE_METHODS:
         return
 

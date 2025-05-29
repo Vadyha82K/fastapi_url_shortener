@@ -22,7 +22,7 @@ def check(
             help="The token to check",
         ),
     ],
-):
+) -> None:
     """
     Check if the passed token is valid - exists or not
     """
@@ -37,7 +37,7 @@ def check(
 
 
 @app.command(name="list")
-def list_tokens():
+def list_tokens() -> None:
     """
     Список всех токенов
     """
@@ -56,7 +56,7 @@ def create() -> None:
 
 
 @app.command()
-def add(token):
+def add(token: str) -> None:
     """
     Добавляет токен в БД
     """
