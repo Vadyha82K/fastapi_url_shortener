@@ -1,7 +1,8 @@
 __all__ = ("storage",)
 
 import logging
-from typing import Iterable, cast
+from collections.abc import Iterable
+from typing import cast
 
 from pydantic import BaseModel
 from redis import Redis
@@ -30,7 +31,7 @@ class ShortUrlBaseError(Exception):
     """
 
 
-class ShortUrlAlreadyExists(ShortUrlBaseError):
+class ShortUrlAlreadyExistsError(ShortUrlBaseError):
     """
     Вызывается при создании коротких URL-адресов, если такой модуль уже существует.
     """
@@ -91,7 +92,7 @@ class ShortUrlsStorage(BaseModel):
     ) -> ShortUrl:
         if not self.exists(short_url_in.slug):
             return self.create(short_url_in)
-        raise ShortUrlAlreadyExists(short_url_in.slug)
+        raise ShortUrlAlreadyExistsError(short_url_in.slug)
 
     @staticmethod
     def delete_by_slug(slug: str) -> None:

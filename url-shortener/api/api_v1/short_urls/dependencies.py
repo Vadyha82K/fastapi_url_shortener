@@ -30,7 +30,7 @@ UNSAFE_METHODS = frozenset(
         "PUT",
         "PATCH",
         "DELETE",
-    }
+    },
 )
 
 static_api_token = HTTPBearer(
@@ -63,7 +63,7 @@ def validate_api_token(
     if redis_tokens.token_exists(
         api_token.credentials,
     ):
-        return None
+        return
 
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -99,7 +99,7 @@ def api_token_or_user_basic_auth_required_for_unsafe_methods(
     ],
 ) -> None:
     if request.method not in UNSAFE_METHODS:
-        return
+        return None
 
     if credentials:
         return validate_basic_auth(credentials=credentials)

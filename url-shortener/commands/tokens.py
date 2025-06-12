@@ -42,7 +42,7 @@ def list_tokens() -> None:
     Список всех токенов
     """
     print(Markdown("# Available API Tokens"))
-    print(Markdown("\n- ".join([""] + tokens.get_tokens())))
+    print(Markdown("\n- ".join(["", *tokens.get_tokens()])))
     print()
 
 

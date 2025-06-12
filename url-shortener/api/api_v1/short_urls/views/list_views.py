@@ -5,7 +5,7 @@ from fastapi import (
     status,
 )
 
-from api.api_v1.short_urls.crud import ShortUrlAlreadyExists, storage
+from api.api_v1.short_urls.crud import ShortUrlAlreadyExistsError, storage
 from api.api_v1.short_urls.dependencies import (
     api_token_or_user_basic_auth_required_for_unsafe_methods,
 )
@@ -66,8 +66,8 @@ def create_short_url(
 ) -> ShortUrl:
     try:
         return storage.create_or_raise_if_exists(short_url_create)
-    except ShortUrlAlreadyExists:
+    except ShortUrlAlreadyExistsError as err:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Short URL with by slug={short_url_create.slug!r} already exists",
-        )
+        ) from err
