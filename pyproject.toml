@@ -76,6 +76,8 @@ target-version = "py313"
 select = [
     "FAST",  # FastAPI (FAST)
     "ANN",  # flake8-annotations (ANN)
+    "I",  # isort (I)
+    "F",  #  Pyflakes (F)
 ]
 ignore = [
 
