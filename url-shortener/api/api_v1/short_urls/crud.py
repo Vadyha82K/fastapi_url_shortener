@@ -1,7 +1,7 @@
 __all__ = ("storage",)
 
 import logging
-from typing import cast, Iterable
+from typing import Iterable, cast
 
 from pydantic import BaseModel
 from redis import Redis
@@ -10,8 +10,8 @@ from core import config
 from schemas.short_url import (
     ShortUrl,
     ShortUrlCreate,
-    ShortUrlUpdate,
     ShortUrlPartialUpdate,
+    ShortUrlUpdate,
 )
 
 log = logging.getLogger(__name__)

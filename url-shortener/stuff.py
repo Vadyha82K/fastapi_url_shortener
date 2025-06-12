@@ -1,4 +1,3 @@
-from typing import reveal_type
 
 from redis import Redis
 

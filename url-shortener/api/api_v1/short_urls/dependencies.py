@@ -2,26 +2,25 @@ import logging
 from typing import Annotated
 
 from fastapi import (
-    HTTPException,
-    status,
-    Request,
     Depends,
+    HTTPException,
+    Request,
+    status,
 )
 from fastapi.security import (
     HTTPAuthorizationCredentials,
-    HTTPBearer,
     HTTPBasic,
     HTTPBasicCredentials,
+    HTTPBearer,
 )
 
-
-from .crud import storage
 from api.api_v1.auth.services import (
     redis_tokens,
     redis_users,
 )
 from schemas.short_url import ShortUrl
 
+from .crud import storage
 
 log = logging.getLogger(__name__)
 
