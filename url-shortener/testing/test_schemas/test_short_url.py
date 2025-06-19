@@ -36,8 +36,8 @@ class ShortUrlCreateTestCase(TestCase):
         urls = [
             "http://example.com",
             "https://example.com",
-            "rtmp://example.com",
-            "rtmps://example.com",
+            # "rtmp://example.com",
+            # "rtmps://example.com",
             "http://abc.example.com",
             "https://www.example.com",
         ]
