@@ -14,9 +14,7 @@ from schemas.short_url import (
 
 def create_short_url() -> ShortUrl:
     short_url_in = ShortUrlCreate(
-        slug="".join(
-            random.choices(string.ascii_letters, k=8),  # noqa: S311
-        ),
+        slug="".join(random.choices(string.ascii_letters, k=8)),  # noqa: S311
         description="A short url",
         target_url="https://example.com",
     )
