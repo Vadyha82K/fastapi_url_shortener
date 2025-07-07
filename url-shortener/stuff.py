@@ -1,4 +1,3 @@
-
 from redis import Redis
 
 from core import config
@@ -37,6 +36,7 @@ def main() -> None:
     )
     redis.delete("name")
     print("name:", redis.get("name"))
+    print("spam:", redis.get("spam"))
 
 
 if __name__ == "__main__":
